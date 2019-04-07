@@ -192,3 +192,30 @@ Daca ar fi sa cerem datele folosind limbajul natural si poate chiar limba romana
    }
 }
 ```
+
+Daca ar fi sa comparam query-ul nostru de GraphQL cu JSON-ul pe care vrem sa-l primim, putem vedea ca sunt aproape acelasi lucru, singurul lucru care lipseste din query-ul nostru sunt valorile pe care JSON-ul le contine. Acest lucru deriva de la faptul ca si in limbaj natural intrebarile noastre seamana cu raspunsurile pe care le primim.
+Spre exemplu daca raspunsul pe care il obtinem este:
+> Noi suntem programatori.
+Intrebarea (*query-ul*) noastra ar arata asa:
+> (Ce) sunteti voi?
+
+In acest lucru se ascunde inca un feature al GraphQL-ului: nu este nevoie sa inspectam raspunsul unui request pentru a-l putea reprezenta in UI.
+
+Putem folosi API-ul de GraphQL pentru API-ul de Star Wars utilizand: https://github.com/graphql/swapi-graphql. Puteti incerca sa obtineti toate informatiile de care are nevoie componenta noastra de detalii folosind urmatorul GraphQL *query*:
+
+```graphql
+{
+  person(personID: 4) {
+    name,
+    birthYear,
+    homeworld {
+      name
+    },
+    filmConnection {
+      films {
+        title
+      }
+    }
+  }
+}
+```
