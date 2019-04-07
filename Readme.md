@@ -83,5 +83,112 @@ Inca in dubii legat de utilitatea GraphQL-ului?
 
 ## API-uri REST vs. API-uri GraphQL - exemplu concret
 
+Sa ne imaginam ca avem de construit o aplicatie care va oferii detalii despre personajele din filmele Star Wars.
 
+In primul nostru task vrem sa construim o pagina care sa arate detalii despre un singur personaj. Spre exemplu, Darth Vader si toate filmele in care a aparut. Vrem sa oferim numele personajului, anul nasterii, planeta de pe care vine si titlul filmelor in care a aparut.
 
+Daca analizam cerinta, putem vedea ca avem de a face cu 3 resurse diferite: Personaj, Planeta si Film. Relatii dintre aceste 3 resurse pot fi:
+
+* Personajul are mai multe Filme in care a aparut
+* Planeta are mai multe Personaje cu originea de pe aceasta
+
+Sa ne uitam cum ar putea arata toate acestea in format JSON:
+
+```javascript
+{
+  "data": {
+    "persoana": {
+      "nume": "Darth Vader",
+      "anulNasterii": "41.9BBY",
+      "planeta": {
+        "nume": "Tatooine"
+      },
+      "filme": [
+        { "titlu": "A New Hope" },
+        { "titlu": "The Empire Strikes Back" },
+        { "titlu": "Return of the Jedi" },
+        { "titlu": "Revenge of the Sith" }
+      ]
+    }
+  }
+}
+```
+
+Reprezentarea unei componente de UI pentru datele noastre ar putea fi urmatoarea:
+
+```javascript
+<p><strong>Nume: </strong> {persoana.name}</p>
+<p><strong>Anul Nasterii: </strong> {persoana.anulNasterii}</p>
+<p><strong>Planeta: </strong> {persoana.planeta.nume}</p>
+<p><strong>Filme: </strong> {persoana.filme.map(film => film.titlu)}</p>
+```
+
+In acest exemplu simplu am consumat toate resursele pe care ni le-a trimis API-ul nostru. Acum sa vedem cum putem cere datele acestea unui API REST:
+
+```
+GET - /personaje/{id} // presupunand ca stim id-ul personajului, il vom oferii API-ului nostru ca mai apoi el sa ne dea informatii despre el
+```
+
+Un endpoint construit folosind standardele REST ne-ar da pe langa informatiile caracteristice personajului si id-ul planetei de pe care provine si o lista cu id-urile filmelor in care a aparut.
+
+```javascript
+{
+  "nume": "Darth Vader",
+  "anulNasterii": "41.9BBY",
+  "idPlaneta": 1
+  "iduriFilme": [1, 2, 3, 6]
+}
+// reprezentarea json cu ceea ce am putea primi folosind endpoint-ul precedent
+```
+
+Apoi pentru a afla numele planetei personajului, vom trimite inca un request:
+
+```
+GET - /planete/1 // vom apela un endpoint similar cu cel definit pentru personaje
+```
+
+Iar pentru a obtine titlurile filmelor vom trimite urmatoarele request-uri:
+
+```
+GET - /filme/1
+GET - /filme/2
+GET - /filme/3
+GET - /filme/6
+```
+
+Dupa ce vom primi toate raspunsurile putem sa le combinam pentru a ne modela componenta de detalii a personajului. Putem observa ca folosind un API clasic de tip REST vom face 6 request-uri pentru o singura componenta, si pe langa asta a trebuit sa descriem fiecare request pe care l-am facut intr-un mod imperativ.
+
+Acest exemplu a fost bazat pe API-ul public http://swapi.co/ pe care-l puteti incerca pentru a modela componenta descrisa.
+
+Putem evita totusi toate acele request-uri pentru filme daca am incerca sa ne facem un endpoint care ar arata in felul urmator:
+
+```
+GET - /personaje/{id}filme
+```
+
+In API-uri REST clasice nu vom vedea prea des un endpoint care sa ne ofere datele intr-un astfel de mod si va trebui sa vorbim cu inginerii nostri care lucreaza la API sa implementeze acest tip de endpoint. Adesea asa cresc API-urile REST, adaugam endpoint-uri specifice pentru nevoile clientilor.
+
+Acum sa aruncam o privire la cum GraphQL abordeaza task-ul nostru.
+Serverul nostru acum va expune doar un singur endpoint iar canalul de comunicare nu va conta. Fie ca e o operatie de tip GET sau o operatie de tip POST si asa mai departe toate vor ajunge intr-un singur loc si in cazul nostru ar putea ajunge in: ```/graphql```.
+
+Din moment ce noi vrem sa primim toate datele noastre intr-un singur request trebuie sa ii exprimam aceasta dorinta endpoint-ului printr-un GraphQL query:
+
+```
+GET or POST /graphql?query={...} // query e doar un string care va avea o structura predefinita cu datele pe care le cerem
+```
+
+Daca ar fi sa cerem datele folosind limbajul natural si poate chiar limba romana am spune *avem nevoie de numele unui personaj, data lui de nastere, numele planetei de provenienta si titlul filmelor in care apare*. Intr-un query de GraphQL am scrie in felul urmator:
+
+```graphql
+{
+  personaj(ID: ...) {
+    nume,
+    anulNasterii,
+    planeta {
+      nume
+   },
+   filme {
+    titlu
+   }
+}
+```
