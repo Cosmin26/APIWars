@@ -29,10 +29,12 @@ Uitandu-ne la o librarie online am vrea sa vedem mai multe detalii despre: carti
 <img src="https://jscomplete.com/images/reads/introduction-to-graphql/f104.png" width="554"/>
 * Imagine preluata de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
 
+
 Cu GraphQL, transformam procesul de a cere mai multe resurse in mai multe request-uri, intr-unul singur. Clientul ii va cere serviciului de GraphQL, printr-un singur request resursele de care are nevoie si va primi doar un singur raspuns cu exact ceea ce doreste. Acest lucru bineinteles poate fi realizat si cu un REST API, insa am devia de la normele dupa care ne ghidam atunci cand contruim un astfel de serviciu, lucru care nu este foarte recomandat in API-uri publice ca sa numim un exemplu.
 
 <img src="https://jscomplete.com/images/reads/introduction-to-graphql/f105.png" width="554"/>
 * Imagine preluata de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
+
 
 Inca un beneficiu major pe care ni-l ofera GraphQL este comunicarea cu mai multe API-uri. Cand avem mai multe clienti care cer date din multe locuri diferite, un layer de GraphQL poate veni in ajutor simplificand si standarlizand comunicarea. Desi acesta nu este un factor major pentru a folosi GraphQL peste REST, un GraphQL layer poate oferi o structura comuna intre clienti si servicii.
 
