@@ -52,7 +52,7 @@ Spre exemplu un endpoint de a citi cartile pe care le ofera un API pot arata ast
 
 ``` 
 GET /books // pentru a primi lista cu toate cartile sau 
-GET /books/bookID pentru a primi o singura carte
+GET /books/bookID // pentru a primi o singura carte
 ```
 
 In cazul acesta clientul nu poate sa ii comunice serverului ca are nevoie doar de numele cartii si o poza cu coperta sau ca are nevoie si de datele autorului ca sa poata sa ii faca o reclama pozitiva. Daca ar fi sa folosim termenii inventati de catre autorii GraphQL, noi am enuntat o problema de *over-fetching* sau de *under-fetching*.
