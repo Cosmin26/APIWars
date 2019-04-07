@@ -28,3 +28,16 @@ Uitandu-ne la o librarie online am vrea sa vedem mai multe detalii despre: carti
 
 <img src="https://jscomplete.com/images/reads/introduction-to-graphql/f104.png" width="554"/>
 * Imagine preluata de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
+
+Cu GraphQL, transformam procesul de a cere mai multe resurse in mai multe request-uri, intr-unul singur. Clientul ii va cere serviciului de GraphQL, printr-un singur request resursele de care are nevoie si va primi doar un singur raspuns cu exact ceea ce doreste. Acest lucru bineinteles poate fi realizat si cu un REST API, insa am devia de la normele dupa care ne ghidam atunci cand contruim un astfel de serviciu, lucru care nu este foarte recomandat in API-uri publice ca sa numim un exemplu.
+
+<img src="https://jscomplete.com/images/reads/introduction-to-graphql/f105.png" width="554"/>
+* Imagine preluata de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
+
+Inca un beneficiu major pe care ni-l ofera GraphQL este comunicarea cu mai multe API-uri. Cand avem mai multe clienti care cer date din multe locuri diferite, un layer de GraphQL poate veni in ajutor simplificand si standarlizand comunicarea. Desi acesta nu este un factor major pentru a folosi GraphQL peste REST, un GraphQL layer poate oferi o structura comuna intre clienti si servicii.
+
+Putem sa privim layer-ul de GraphQL ca un traducator. Sa presupunem ca avem 3 oamenii de la care vrem sa obtinem un raspuns pentru intrebarea noastra. Insa cei 3 oameni vorbesc 3 limbi diferite si toti 3 detin bucati de informatii de care avem nevoie pentru a ajunge la adevaratul raspuns de care avem nevoie. Daca am avea un traducator care sa vorbeasca cele 3 limbi ale oamenilor nostri, si sa stie cum sa ii intrebe pe fiecare in parte in asa fel incat sa combine raspunsurile, atunci problema noastra e ca si rezolvata. Exact asta face si layer-ul de GraphQL.
+
+Calculatoarele inca nu sunt destul de inteligente incat sa ne raspunda la intrebari complexe fara sa le descriem pas cu pas ceea ce vrem (ca intr-un algoritm). De aceea avem nevoie sa definim o schema pentru GraphQL care va fi ulterior folosita de catre clienti.
+
+Aceasta schema practic defineste limitele API-ului nostru fara sa ii ofere o structura stricta deoarece schema este reprezentata sub forma unui graph.
