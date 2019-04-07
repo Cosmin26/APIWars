@@ -196,7 +196,9 @@ Daca ar fi sa cerem datele folosind limbajul natural si poate chiar limba romana
 Daca ar fi sa comparam query-ul nostru de GraphQL cu JSON-ul pe care vrem sa-l primim, putem vedea ca sunt aproape acelasi lucru, singurul lucru care lipseste din query-ul nostru sunt valorile pe care JSON-ul le contine. Acest lucru deriva de la faptul ca si in limbaj natural intrebarile noastre seamana cu raspunsurile pe care le primim.
 Spre exemplu daca raspunsul pe care il obtinem este:
 > Noi suntem programatori.
+
 Intrebarea (*query-ul*) noastra ar arata asa:
+
 > (Ce) sunteti voi?
 
 In acest lucru se ascunde inca un feature al GraphQL-ului: nu este nevoie sa inspectam raspunsul unui request pentru a-l putea reprezenta in UI.
@@ -219,3 +221,85 @@ Putem folosi API-ul de GraphQL pentru API-ul de Star Wars utilizand: https://git
   }
 }
 ```
+
+## Cu multa flexibilitate vine responsabilitate mare
+
+Solutii perfecte nu exista. Odata cu flexibilitatea introdusa de GraphQL apar o multitudine de probleme.
+
+O problema grava pe care GraphQL a creat-o sunt *DDOS-urile* (Denial of Service attacks) mult mai accesibile. Un server de GraphQL poate fi atacat cu query-uri recursive sau foarte complexe, care sa consume toate resursele acestuia. Aceste tipuri de atacuri nu sunt specifice GraphQL-ului insa sunt facute usor de realizat datorita flexibilitatii cu care ne "ajuta" acesta.
+
+Aceasta problema poate fi rezolvata in cateva metode nu tocmai perfecte printre care:
+
+* Oprirea request-urilor care tin mult prea mult
+* Stabilirea limitelor pentru clienti care vor sa acceseze resurse
+* Daca API-ul nostru nu e public putem sa autorizam query-urilor clientilor nostrii cu un identificator unic. Aceasta metoda pare sa fie folosita de catre Facebook.
+
+Ultimul punct ne duce cu gandul la o alta problema si anume autentificarea si autorizarea clientilor. Cand sa avem grija de aceste lucruri, inainte, dupa sau in timpul executarii procesului?
+
+Pentru a rezolva problema asta, putem sa ne inspiram de la REST API-uri. Putem sa privim GraphQL ca un layer intre datele noastre si clienti, iar autentificarea si autorizatia ar putea fi un alt layer pe care il putem pune peste cel de GraphQL. Dar daca vrem sa punem aceste layere in spatele GraphQL-ului, putem folosi GraphQL pentru a comunica clientilor token-urile de acces de la layer-ul de securitate si invers.
+
+O alta problema care ne da batai de cap este *caching* pe client. Spre deosebire de un REST API care are o structura de dictionar unde fiecare locatie ne da o resursa unica, GraphQL e sub forma de *graf* si acest lucru e problematic. Am putea sa pastram un cache sub forma de *query*: valoare insa aceasta solutie este limitata.
+
+Si lista de probleme continua prin probleme mult mai complexe precum *N+1 SQL queries*. Pentru a putea intelege cum ne afecteaza *N+1 SQL queries* putem sa ilustram o relatie simpla intre un *User* tip si un tip *Adresa*:
+
+```graphql
+type User {
+  id: ID
+  adresa: Adresa
+}
+type Adresa {
+  id: ID
+  nuneStrada: String
+  oras: String
+}
+```
+
+Si sa presupunem ca facem un *query* simplu pentru a obtine lista cu toti userii:
+
+```graphql
+query ObtineListaUser {
+  userLista {
+    id
+    adresa {
+      id
+      numeStrasda
+    }
+  }
+}
+```
+
+Pentru a putea primii rezultatul acelui query GraphQL merge printr-o serie de pasi care se numesc si *resolveri*. Primul *query resolver* este ```userLista``` care ne va citi din baza de date printr-un singur query toti userii:
+
+```javascript
+const resolvers = {
+  query: {
+    userList: (root) => {
+      return db.users.all()
+    }
+  }
+}
+```
+
+Al doilea pas ar fi ca pentru fiecare *n* useri din acea lista, GraphQL sa foloseasca alt *resolver* pentru a lua atributul de adresa, adica sa faca cate un query pentru fiecare element din lista:
+
+```javascript
+const resolvers = {
+  User: {
+    address: (user) => {
+      return db.addresses.fromId(user.addressId)
+    }
+  }
+}
+```
+
+Acest lucru este foarte ineficient sa obtinem o lista de atribute si adesea baza noastra de date ne-ar permite sa obtinem lista de adrese folosind o operatie precum: ```db.addresses.fetchFromIds(addressIds)``` si asa am dori sa facem si noi.
+
+O solutie pentru problema de *n+1 SQL queries* poate fi un modul numit **_DataLoader_**, un proiect contribuit comunitatii de catre Facebook, care se ocupa cu 2 lucruri:
+1. Face cache la request-uri similare
+2. Grupeaza request-urile unui singur obiect
+
+## Concluzie
+
+NPM registry a prezis ca 2019 va fi anul in care GraphQL va exploda ca si popularitate, insa ca orice trend trebuie tratat cu grija pentru ca s-ar putea dovedi ca nu este solutia problemelor api-urilor voastre existente. Singurul factor care ar trebui sa va faca sa decideti daca GraphQL intr-adevar viitorul consumptiei de API-uri este sa-l incercati.
+
+Puteti consulta urmatorul repository de Github unde puteti vedea o diferenta clara intre cum se consuma un api clasic REST si cum se consuma unul de GraphQL: https://linkcatregit.com/
