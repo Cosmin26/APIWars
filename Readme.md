@@ -43,3 +43,44 @@ Putem sa privim layer-ul de GraphQL ca un traducator. Sa presupunem ca avem 3 oa
 Calculatoarele inca nu sunt destul de inteligente incat sa ne raspunda la intrebari complexe fara sa le descriem pas cu pas ceea ce vrem (ca intr-un algoritm). De aceea avem nevoie sa definim o schema pentru GraphQL care va fi ulterior folosita de catre clienti.
 
 Aceasta schema practic defineste limitele API-ului nostru fara sa ii ofere o structura stricta deoarece schema este reprezentata sub forma unui graph.
+
+## Care sunt limitarile folosind un REST API?
+
+Principala problema a unui serviciu REST traditional este ca clientii trebuie sa ceara de mai multe ori resurse diferite. Acest lucru se intampla din cauza faptul ca clientii servicilor noastre REST nu au un limbaj comun prin care sa poata sa controleze ce date primesc de la numeroasele endpoint-uri ale acestora.
+
+Spre exemplu un endpoint de a citi cartile pe care le ofera un API pot arata astfel:
+
+``` GET /books // pentru a primi lista cu toate cartile sau 
+    GET /books/bookID pentru a primi o singura carte
+```
+
+In cazul acesta clientul nu poate sa ii comunice serverului ca are nevoie doar de numele cartii si o poza cu coperta sau ca are nevoie si de datele autorului ca sa poata sa ii faca o reclama pozitiva. Daca ar fi sa folosim termenii inventati de catre autorii GraphQL, noi am enuntat o problema de *over-fetching* sau de *under-fetching*.
+
+Alta problema cu API-urile de tip REST este versionarea lor. Daca dorim sa sustinem mai multe versiuni pentru API-ul nostru atunci trebuie sa introducem endpoint-uri noi care pot fi greu de ingrijit.
+
+Genul acesta de probleme sunt exact ceea ce au vrut autorii GraphQL-ului sa rezolve.
+
+## Cum rezolva GraphQL aceste probleme?
+
+Sunt multe concepte in spatele GraphQL-ului, dar cele mai importe sunt:
+
+* O *schema* de GraphQL este exprimata prin tipuri de date. Pentru a crea o *schema*, trebuie sa ne definim proprietati cu tipuri. Aceste tipuri pot fi primitive (*Integers*, *Strings*, etc.) sau tipuri definite de care noi.
+
+* GraphQL trateaza datele ca si cum ar face parte dintr-un *graf*, reprezentand clar datele si relatiile dintre acestea.
+
+* GraphQL exprima nevoie de date intr-un mod declarativ, oferind clientilor un limbaj pentru a-si enunta necesitatile. Acest mod declarativ ne permite sa ne gandim la necesititatea noastra pentru date in limbaj natural.
+
+Mergand in detaliu peste fiecare problema a serviciilor REST putem intelege mai bine conceptele enuntate anterior:
+
+* Pentru a rezolva problema cu request-uri multiple catre diferite endpoint-uri, GraphQL duce ideea de endpoint customizat la extrem si ofera astfel doar un singur endpoint pentru toate nevoile clientilor.
+
+* Cu un singur endpoint atunci apare nevoia de un limbaj prin care clientii sa stie cum sa ceara anumite date de la un singur endpoint. Daca nu am avea acest limbaj s-ar putea sa ne trezim ca am obtinut in interfata practic toata baza de date, lucru care nu e dorit. Cu acest limbaj clientul are control asupra request-ului, lucru care in trecut era detinut de catre API, si obtine ceea ce vrea.
+
+* In ceea ce priveste *versionarea*, GraphQL pur si simplu evita aceasta problema prin structura de *graf* in care sunt reprezentate datele. Oricand putem introduce noi proprietati fara sa le stergem pe cele vechi, creand noi noduri in *graf* si odata cu ele noi drumuri. API-ul nostru doar creste nu se modifica cu totul. Acest lucru este foarte util pentru clienti mobili la care nu putem controla versiunea de API pe care aleg s-o foloseasca. Odata instalata o aplicatie mobila poate ramane nemodificata ani buni prin refuzarea update-urilor.
+
+Inca in dubii legat de utilitatea GraphQL-ului?
+
+## API-uri REST vs. API-uri GraphQL - exemplu concret
+
+
+
