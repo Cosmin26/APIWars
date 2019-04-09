@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import { ProfileCard } from './components/Profile/ProfileCard';
 
 class App extends Component {
 
@@ -28,16 +29,35 @@ class App extends Component {
  
   render() {
     return (
-      <div className="App">
-        <p>{JSON.stringify(this.state)}</p>
+      <div className="center">
+        <ProfileCard profileData={this.state.profileData}/>
+        <button onClick={this.handleChangeCharacter} data-step="-1">
+          Prev
+        </button>
+        <button onClick={this.handleChangeCharacter} data-step="1">
+          Next
+        </button>
       </div>
     );
   }
 
+  handleChangeCharacter = event => {
+    const step = parseInt(event.target.dataset.step);
+
+    this.setState(prevState => {
+      const newCharacterId = prevState.currentCharacterId + step;
+      if (newCharacterId > 0 && newCharacterId < 4) {
+        return {
+          currentCharacterId: newCharacterId
+        };
+      }
+    });
+  };
+
   async getCharacterData() {
     const profileResponse = await fetch(this.ROOT_URL + "people/" + this.state.currentCharacterId, {mode: "cors"});
     const profileJson = await profileResponse.json();
-    const {name, birth_year} = profileJson;
+    const {name, birth_year: birthYear, height, mass, eye_color: eyeColor, gender} = profileJson;
 
     const planetResponse = await fetch(profileJson.homeworld, {mode: "cors"});
     const planetJson = await planetResponse.json();
@@ -51,12 +71,23 @@ class App extends Component {
     const filmJsons = await Promise.all(filmTitlePromises);
     const filmTitles = filmJsons.map(filmJson => filmJson.title);
 
+    import(`./assets/${name
+      .replace(/ /g, "_")
+      .toLowerCase()}.svg`).then(src =>
     this.setState({
-      name,
-      birth_year,
-      planetName,
-      filmTitles
-    });
+      profileData: {
+        name,
+        birthYear,
+        height,
+        gender,
+        mass,
+        eyeColor,
+        planetName,
+        filmTitles,
+        vectorArt: src.default
+      }
+    })
+      );
   }
 }
 
