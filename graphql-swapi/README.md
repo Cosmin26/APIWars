@@ -1,4 +1,4 @@
-### Swapi GraphQL Client
+## Swapi GraphQL Client
 
 This is a small application which consumes the [Swapi REST API](https://swapi.co/) in order to show how it's done with GraphQL queries.
 
@@ -10,11 +10,11 @@ In order to use this client app, you'll need to use this GraphQL wrapper around 
 
 [https://github.com/voronianski/swapi-graphql-react-app](https://github.com/voronianski/swapi-graphql-react-app)
 
-## Available Scripts
+### Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+#### `npm start`
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
