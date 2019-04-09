@@ -1,61 +1,61 @@
 # REST a bit and try GraphQL (Optimizarea Api-urilor pentru client cu GraphQL)
 ## Introducere
 
-Dupa ani intregi in care am avut de a face cu API-uri de tip REST, fie consumandu-le ca si simplu client, fie construind propriul serviciu, am putut simti cum neajunsurile unui serviciu REST pot provoca frustrari. In momentul in care serviciile noastre de tip REST cresc in dimensiune si compplexitate intervin probleme precum organizarea endpoint-urilor intr-un mod eficient si structurat si satisfacerea nevoii de date a clientilor API-ului construit. Acest tip de frustrari i-au impins pe cei de la Facebook sa anunte in 2012 si apoi sa-l ofere gratuit in 2015, un nou concept de API si anume GraphQL. La momentul introducerii sale, GraphQL a fost privit ca o alternativa excelenta in domeniul API-urilor datorita flexibilitatii pe care o oferea.
+După ani întregi în care am avut de a face cu API-uri de tip REST, fie consumându-le ca și simplu client, fie construind propriul serviciu, am putut simți cum neajunsurile unui serviciu REST pot provoca frustrări. În momentul în care serviciile noastre de tip REST cresc în dimensiune și complexitate, intervin probleme precum organizarea endpoint-urilor într-un mod eficient, structurat și satisfacerea nevoii de date ale clienților API-ului construit. Acest tip de frustrări i-au împins pe cei de la Facebook să anunțe în 2012 și, apoi, să-l ofere gratuit în 2015, un nou concept de API, și anume GraphQL. La momentul introducerii sale, GraphQL a fost privit ca o alternativă excelentă în domeniul API-urilor, datorită flexibilității pe care o oferea.
 
-Dar v-ati intreba totusi de ce a-ti avea nevoie chiar voi de GraphQL?
+Dar v-ați întreba totuși, de ce ați avea nevoie chiar voi de GraphQL?
 
 ## Pe scurt: De ce GraphQL?
 
-Cele mai importante probleme pe care GraphQL incearca sa le rezolve sunt:
+Cele mai importante probleme pe care GraphQL încearcă să le rezolve sunt:
 
-* Necesitatea de a face mai multe request-uri pentru datele de care avem nevoie: Cu GraphQL, putem face un singur request pentru datele de care avem nevoie de la un server deoarece clientul nostru stie cum sa ii ceara unui GraphQL server datele folosind un singur query (mai multe detalii in continuare). Pentru a face acelasi lucru cu un REST API, trebuie sa introducem conditii si parametrii in plus care sunt greu de ingrijit cand aplicatia creste;
-* Clientii depind de serveri: Cu GraphQL, clientul poate comunica cu serverul intr-un limbaj special care ne permite sa eliminam necesitatea serveruiui sa ofere forma sau dimensiunea datelor si ii ofera clientului independenta fata de server. Astfel putem mentine si imbunatatii un server si un client separat.
-* Experienta neplacuta ca si front-end developer: Datorita GraphQL-ului, developerii pot exprima nevoile interfetelor lor printr-un limbaj declarativ. Ei exprima ce au nevoie, nu cum sa il obtina.
+* Necesitatea de a face mai multe request-uri pentru datele de care avem nevoie: Cu GraphQL, putem face un singur request pentru datele de care avem nevoie de la un server, deoarece clientul nostru știe cum să îi ceară unui GraphQL server datele, folosind un singur query. Pentru a face același lucru cu un REST API, trebuie să introducem condiții și parametrii în plus, aceștia fiind greu de îngrijit când aplicația crește;
+* Clienții depind de serveri: Cu GraphQL, clientul poate comunica cu serverul într-un limbaj special, care ne permite să eliminăm necesitatea serveruiui să ofere forma sau dimensiunea datelor și îi oferă clientului independența față de server. Astfel, putem menține și imbunatați un server și un client, separat.
+* Experiența neplacută drept front-end developer: Datorită GraphQL-ului, developerii pot exprima nevoile interfețelor proprii printr-un limbaj declarativ. Ei exprimă ce au nevoie, nu cum să îl obțină.
 
-In acest articol vom explica in detaliu cum GraphQL ne va rezolva toate aceste probleme.
+În acest articol vom explica în detaliu cum GraphQL ne va rezolva toate aceste probleme.
 
-Inainte de a continua, pentru cei care nu sunt familiari deloc cu GraphQL, ii vom oferi o definitie.
+Înainte de a continua, pentru cei care nu sunt familiari deloc cu GraphQL, le voi oferi o definiție.
 
 ## Ce este GraphQL?
 
-GraphQL se ocupa de comunicarea de date. Aveti un server si un client, iar amandoi trebuie sa vorbeasca intre ei. Clientul trebuie sa ii spuna serverului de ce date are nevoie, si serverul trebuie sa fie capabil sa ii trimita datele cerute. In acest proces de comunicare intervine GraphQL.
+GraphQL se ocupă de comunicarea de date. Aveți un server și un client, iar amândoi trebuie să vorbească între ei. Clientul trebuie să îi spună serverului de ce date are nevoie, iar serverul trebuie să fie capabil să îi trimită datele cerute. În acest proces de comunicare intervine GraphQL.
 
-Dar nu se poate comunicarea asta sa fie direct intre client si server, fara niciun alt intermediar? Este posibil, cum a fost si pana acum in serverele noastre REST.
+Nu se poate ca această comunicare să fie direct între client și server, fără niciun alt intermediar? Este posibil, cum a fost și până acum, în serverele noastre REST.
 
-Sunt cateva motive pentru care totusi am vrea sa avem un intermediar. Unul dintre acele motive, si probabil cel mai popular este eficienta. 
+Sunt câteva motive pentru care, totusi, am vrea să avem un intermediar. Unul dintre acele motive, și probabil cel mai popular, este eficiența. 
 Uitandu-ne la o librarie online am vrea sa vedem mai multe detalii despre: carti, autori, si posibile review-uri. Un server clasic REST ne-ar oferi endpoint-uri diferite pentru toate cele 3 entitati si clientul ar trebui sa ceara pe rand ceea ce vrea sa vada.
 
 <img src="https://jscomplete.com/images/reads/introduction-to-graphql/f104.png" width="554"/>
-* Imagine preluata de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
+* Imagine preluată de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
 
 
-Cu GraphQL, transformam procesul de a cere mai multe resurse in mai multe request-uri, intr-unul singur. Clientul ii va cere serviciului de GraphQL, printr-un singur request resursele de care are nevoie si va primi doar un singur raspuns cu exact ceea ce doreste. Acest lucru bineinteles poate fi realizat si cu un REST API, insa am devia de la normele dupa care ne ghidam atunci cand contruim un astfel de serviciu, lucru care nu este foarte recomandat in API-uri publice ca sa numim un exemplu.
+Cu GraphQL, transformăm procesul de a cere mai multe resurse în mai multe request-uri, intr-unul singur. Clientul îi va cere serviciului de GraphQL, printr-un singur request resursele de care are nevoie, primind doar un singur răspuns, cu exact ceea ce dorește. Bineînțeles, acest lucru poate fi realizat și cu un REST API, însă am devia de la normele după care ne ghidăm atunci când construim un astfel de serviciu, lucru care nu este foarte recomandat în API-uri publice, de exemplu.
 
 <img src="https://jscomplete.com/images/reads/introduction-to-graphql/f105.png" width="554"/>
-* Imagine preluata de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
+* Imagine preluată de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
 
 
-Inca un beneficiu major pe care ni-l ofera GraphQL este comunicarea cu mai multe API-uri. Cand avem mai multe clienti care cer date din multe locuri diferite, un layer de GraphQL poate veni in ajutor simplificand si standarlizand comunicarea. Desi acesta nu este un factor major pentru a folosi GraphQL peste REST, un GraphQL layer poate oferi o structura comuna intre clienti si servicii.
+Încă un beneficiu major pe care ni-l oferă GraphQL, este comunicarea cu mai multe API-uri. Când avem mai mulți clienți, care cer date din locuri diferite, un layer de GraphQL poate veni în ajutor, simplificand și standardizând comunicarea. Deși acesta nu este un factor major pentru a folosi GraphQL peste REST, un GraphQL layer poate oferi o structură comună între clienți și servicii.
 
-Putem sa privim layer-ul de GraphQL ca un traducator. Sa presupunem ca avem 3 oamenii de la care vrem sa obtinem un raspuns pentru intrebarea noastra. Insa cei 3 oameni vorbesc 3 limbi diferite si toti 3 detin bucati de informatii de care avem nevoie pentru a ajunge la adevaratul raspuns de care avem nevoie. Daca am avea un traducator care sa vorbeasca cele 3 limbi ale oamenilor nostri, si sa stie cum sa ii intrebe pe fiecare in parte in asa fel incat sa combine raspunsurile, atunci problema noastra e ca si rezolvata. Exact asta face si layer-ul de GraphQL.
+Putem să privim layer-ul de GraphQL ca un traducător. Să presupunem că avem trei oameni de la care vrem să obținem un răspuns pentru întrebarea noastră. Totuși, oamenii vorbesc limbi diferite și dețin bucăți de informații de care avem nevoie pentru a ajunge la adevăratul răspuns. Dacă am avea un traducător care să vorbească limbile vorbite de oameni și să știe cum să îi întrebe pe fiecare în parte pentru a combina răspunsurile, atunci problema este ca și rezolvată. Exact asta face și layer-ul de GraphQL.
 
-Calculatoarele inca nu sunt destul de inteligente incat sa ne raspunda la intrebari complexe fara sa le descriem pas cu pas ceea ce vrem (ca intr-un algoritm). De aceea avem nevoie sa definim o schema pentru GraphQL care va fi ulterior folosita de catre clienti.
+Calculatoarele încă nu sunt destul de inteligente încât să ne răspundă la întrebări complexe fără să le descriem pas cu pas ceea ce vrem (ca într-un algoritm). De aceea, avem nevoie să definim o schemă pentru GraphQL, care va fi ulterior folosită de clienți.
 
-Aceasta schema practic defineste limitele API-ului nostru fara sa ii ofere o structura stricta deoarece schema este reprezentata sub forma unui graph.
+Această schemă definește limitele API-ului fără să îi ofere o structură strictă, deoarece schema este reprezentată sub forma unui graph.
 
-## Care sunt limitarile folosind un REST API?
+## Care sunt limitările folosind un REST API?
 
-Principala problema a unui serviciu REST traditional este ca clientii trebuie sa ceara de mai multe ori resurse diferite. Acest lucru se intampla din cauza faptul ca clientii servicilor noastre REST nu au un limbaj comun prin care sa poata sa controleze ce date primesc de la numeroasele endpoint-uri ale acestora.
+Principala problemă a unui serviciu REST tradițional constă în clienții care cer de mai multe ori resurse diferite. Acest lucru se întâmplă din cauza faptului că acești clienți ai serviciilor REST nu au un limbaj comun prin care să poată controla ce date primesc de la numeroasele endpoint-uri ale acestora.
 
-Spre exemplu un endpoint de a citi cartile pe care le ofera un API pot arata astfel:
+Spre exemplu, un endpoint de a citi cărțile pe care le oferă un API pot arăta astfel:
 
 ``` 
-GET /books // pentru a primi lista cu toate cartile sau 
-GET /books/bookID // pentru a primi o singura carte
+GET /books // pentru a primi lista cu toate cărțile sau 
+GET /books/bookID // pentru a primi o singură carte
 ```
 
-In cazul acesta clientul nu poate sa ii comunice serverului ca are nevoie doar de numele cartii si o poza cu coperta sau ca are nevoie si de datele autorului ca sa poata sa ii faca o reclama pozitiva. Daca ar fi sa folosim termenii inventati de catre autorii GraphQL, noi am enuntat o problema de *over-fetching* sau de *under-fetching*.
+În cazul acesta, clientul nu poate să îi comunice serverului că are nevoie doar de numele cărții, o poză cu coperta sau că are nevoie și de datele autorului pentru a putea face reclamă  pozitiva. Daca ar fi sa folosim termenii inventati de catre autorii GraphQL, noi am enuntat o problema de *over-fetching* sau de *under-fetching*.
 
 Alta problema cu API-urile de tip REST este versionarea lor. Daca dorim sa sustinem mai multe versiuni pentru API-ul nostru atunci trebuie sa introducem endpoint-uri noi care pot fi greu de ingrijit.
 
