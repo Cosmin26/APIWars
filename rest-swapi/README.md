@@ -1,6 +1,6 @@
 ## Swapi Rest Client
 
-This is a small application which serves the purpose of offering a showcase between how to consume a classic REST API and how to do it with GraphQL
+This is a small application which consumes [Swapi REST API](https://swapi.co/) in order to show how it's done throught traditional requests.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
