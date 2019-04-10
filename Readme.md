@@ -233,4 +233,4 @@ O altă problemă care ne oferă dificultate, este *caching* pe client. Spre deo
 
 NPM registry a prezis că 2019 va fi anul în care GraphQL va exploda ca și popularitate, însă, ca orice trend, trebuie tratat cu grijă pentru că s-ar putea dovedi că nu este soluția problemelor API-urilor noastre existente. Singurul factor care ar trebui să ne facă să decidem dacă GraphQL este viitorul consumului de resurse ale unui API, este să îl încercăm noi înșine.
 
-Puteți consulta următorul repository de Github, unde veți vedea o diferență clară între cum se consumă un API clasic REST și cum se consumă unul de GraphQL: https://linkcatregit.com/
+Puteți consulta următorul repository de Github, unde veți vedea o diferență clară între cum se consumă un API clasic REST și cum se consumă unul de GraphQL: https://github.com/Cosmin26/APIWars.
