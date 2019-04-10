@@ -9,9 +9,9 @@ Dar v-ați întreba totuși, de ce ați avea nevoie chiar voi de GraphQL?
 
 Cele mai importante probleme pe care GraphQL încearcă să le rezolve sunt:
 
-* Necesitatea de a face mai multe request-uri pentru datele de care avem nevoie: Cu GraphQL, putem face un singur request pentru datele de care avem nevoie de la un server, deoarece clientul nostru știe cum să îi ceară unui GraphQL server datele, folosind un singur query. Pentru a face același lucru cu un REST API, trebuie să introducem condiții și parametrii în plus, aceștia fiind greu de îngrijit când aplicația crește;
-* Clienții depind de serveri: Cu GraphQL, clientul poate comunica cu serverul într-un limbaj special, care ne permite să eliminăm necesitatea serveruiui să ofere forma sau dimensiunea datelor și îi oferă clientului independența față de server. Astfel, putem menține și imbunatați un server și un client, separat.
-* Experiența neplacută drept front-end developer: Datorită GraphQL-ului, developerii pot exprima nevoile interfețelor proprii printr-un limbaj declarativ. Ei exprimă ce au nevoie, nu cum să îl obțină.
+* Necesitatea de a face mai multe request-uri pentru datele de care avem nevoie: cu GraphQL, putem face un singur request pentru datele de care avem nevoie de la un server, deoarece clientul nostru știe cum să îi ceară unui GraphQL server datele, folosind un singur query. Pentru a face același lucru cu un REST API, trebuie să introducem condiții și parametrii în plus, aceștia fiind greu de îngrijit când aplicația crește;
+* Clienții depind de servere: cu GraphQL, clientul poate comunica cu serverul într-un limbaj special, care ne permite să eliminăm necesitatea serveruiui să ofere forma sau dimensiunea datelor și îi oferă clientului independența față de server. Astfel, putem menține și imbunătăți un server și un client, separat.
+* Experiența neplacută drept front-end developer: datorită GraphQL-ului, developerii pot exprima nevoile interfețelor proprii printr-un limbaj declarativ. Ei exprimă ce au nevoie, nu cum să îl obțină.
 
 În acest articol vom explica în detaliu cum GraphQL ne va rezolva toate aceste probleme.
 
@@ -23,20 +23,20 @@ GraphQL se ocupă de comunicarea de date. Aveți un server și un client, iar am
 
 Nu se poate ca această comunicare să fie direct între client și server, fără niciun alt intermediar? Este posibil, cum a fost și până acum, în serverele noastre REST.
 
-Sunt câteva motive pentru care, totusi, am vrea să avem un intermediar. Unul dintre acele motive, și probabil cel mai popular, este eficiența. 
-Uitandu-ne la o librarie online am vrea sa vedem mai multe detalii despre: carti, autori, si posibile review-uri. Un server clasic REST ne-ar oferi endpoint-uri diferite pentru toate cele 3 entitati si clientul ar trebui sa ceara pe rand ceea ce vrea sa vada.
+Sunt câteva motive pentru care, totusi, am vrea să avem un intermediar. Unul dintre acele motive și, probabil, cel mai popular, este eficiența. 
+Uitându-ne la o librărie online, am vrea să vedem mai multe detalii despre: cărți, autori și posibile review-uri. Un server clasic REST ne-ar oferi endpoint-uri diferite pentru toate cele 3 entități, iar clientul ar trebui să ceară pe rând ceea ce vrea să vadă.
 
 <img src="https://jscomplete.com/images/reads/introduction-to-graphql/f104.png" width="554"/>
 * Imagine preluată de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
 
 
-Cu GraphQL, transformăm procesul de a cere mai multe resurse în mai multe request-uri, intr-unul singur. Clientul îi va cere serviciului de GraphQL, printr-un singur request resursele de care are nevoie, primind doar un singur răspuns, cu exact ceea ce dorește. Bineînțeles, acest lucru poate fi realizat și cu un REST API, însă am devia de la normele după care ne ghidăm atunci când construim un astfel de serviciu, lucru care nu este foarte recomandat în API-uri publice, de exemplu.
+Când folosim GraphQL, în loc de a cere mai multe resurse de mai multe ori, cerem o singură dată toate resursele de care avem nevoie. Bineînțeles, acest lucru poate fi realizat și cu un REST API, însă am devia de la normele după care ne ghidăm, atunci când construim un astfel de serviciu, lucru care nu este foarte recomandat în API-uri publice, spre exemplu.
 
 <img src="https://jscomplete.com/images/reads/introduction-to-graphql/f105.png" width="554"/>
 * Imagine preluată de pe https://jscomplete.com/learn/complete-intro-graphql/why-graphql
 
 
-Încă un beneficiu major pe care ni-l oferă GraphQL, este comunicarea cu mai multe API-uri. Când avem mai mulți clienți, care cer date din locuri diferite, un layer de GraphQL poate veni în ajutor, simplificand și standardizând comunicarea. Deși acesta nu este un factor major pentru a folosi GraphQL peste REST, un GraphQL layer poate oferi o structură comună între clienți și servicii.
+Încă un beneficiu major pe care ni-l oferă GraphQL, este comunicarea cu mai multe API-uri. Când avem mai mulți clienți, care cer date din locuri diferite, un layer de GraphQL poate veni în ajutor, simplificând și standardizând comunicarea. Deși acesta nu este un factor major pentru a folosi GraphQL peste REST, un GraphQL layer poate oferi o structură comună între clienți și servicii.
 
 Putem să privim layer-ul de GraphQL ca un traducător. Să presupunem că avem trei oameni de la care vrem să obținem un răspuns pentru întrebarea noastră. Totuși, oamenii vorbesc limbi diferite și dețin bucăți de informații de care avem nevoie pentru a ajunge la adevăratul răspuns. Dacă am avea un traducător care să vorbească limbile vorbite de oameni și să știe cum să îi întrebe pe fiecare în parte pentru a combina răspunsurile, atunci problema este ca și rezolvată. Exact asta face și layer-ul de GraphQL.
 
@@ -48,51 +48,51 @@ Această schemă definește limitele API-ului fără să îi ofere o structură 
 
 Principala problemă a unui serviciu REST tradițional constă în clienții care cer de mai multe ori resurse diferite. Acest lucru se întâmplă din cauza faptului că acești clienți ai serviciilor REST nu au un limbaj comun prin care să poată controla ce date primesc de la numeroasele endpoint-uri ale acestora.
 
-Spre exemplu, un endpoint de a citi cărțile pe care le oferă un API pot arăta astfel:
+Spre exemplu, două endpoint-uri de a citi cărțile pe care le oferă un API pot arăta astfel:
 
 ``` 
 GET /books // pentru a primi lista cu toate cărțile sau 
 GET /books/bookID // pentru a primi o singură carte
 ```
 
-În cazul acesta, clientul nu poate să îi comunice serverului că are nevoie doar de numele cărții, o poză cu coperta sau că are nevoie și de datele autorului pentru a putea face reclamă  pozitiva. Daca ar fi sa folosim termenii inventati de catre autorii GraphQL, noi am enuntat o problema de *over-fetching* sau de *under-fetching*.
+În cazul acesta, clientul nu poate să îi comunice serverului că are nevoie doar de numele cărții, o poză cu coperta sau că are nevoie și de datele autorului pentru a putea face reclamă  pozitivă.
 
-Alta problema cu API-urile de tip REST este versionarea lor. Daca dorim sa sustinem mai multe versiuni pentru API-ul nostru atunci trebuie sa introducem endpoint-uri noi care pot fi greu de ingrijit.
+Altă problemă cu API-urile de tip REST este versionarea lor. Dacă dorim să susținem mai multe versiuni pentru API-ul nostru, atunci trebuie să introducem endpoint-uri noi, care pot fi greu de îngrijit.
 
-Genul acesta de probleme sunt exact ceea ce au vrut autorii GraphQL-ului sa rezolve.
+Genul acesta de probleme sunt exact ceea ce au vrut autorii GraphQL-ului să rezolve.
 
-## Cum rezolva GraphQL aceste probleme?
+## Cum rezolvă GraphQL aceste probleme?
 
-Sunt multe concepte in spatele GraphQL-ului, dar cele mai importe sunt:
+Sunt multe concepte în spatele GraphQL-ului, dar cele mai importe sunt:
 
-* O *schema* de GraphQL este exprimata prin tipuri de date. Pentru a crea o *schema*, trebuie sa ne definim proprietati cu tipuri. Aceste tipuri pot fi primitive (*Integers*, *Strings*, etc.) sau tipuri definite de care noi.
+* O *schemă* de GraphQL este exprimată prin tipuri de date. Pentru a crea o *schemă*, trebuie să ne definim proprietăți cu tipuri de date. Aceste tipuri pot fi primitive (*Integers*, *Strings*, etc.) sau tipuri definite de către noi.
 
-* GraphQL trateaza datele ca si cum ar face parte dintr-un *graf*, reprezentand clar datele si relatiile dintre acestea.
+* GraphQL tratează datele ca și cum ar face parte dintr-un *graf*, reprezentând clar datele și relațiile dintre acestea.
 
-* GraphQL exprima nevoie de date intr-un mod declarativ, oferind clientilor un limbaj pentru a-si enunta necesitatile. Acest mod declarativ ne permite sa ne gandim la necesititatea noastra pentru date in limbaj natural.
+* GraphQL exprimă nevoie de date într-un mod declarativ, oferind clienților un limbaj pentru a-și enunța necesitățile. Acest mod declarativ ne permite să ne gândim la necesititatea noastră pentru date în limbaj natural.
 
-Mergand in detaliu peste fiecare problema a serviciilor REST putem intelege mai bine conceptele enuntate anterior:
+Intrând în detaliu despre fiecare problemă a serviciilor REST, putem înțelege mai bine conceptele enunțate anterior:
 
-* Pentru a rezolva problema cu request-uri multiple catre diferite endpoint-uri, GraphQL duce ideea de endpoint customizat la extrem si ofera astfel doar un singur endpoint pentru toate nevoile clientilor.
+* Pentru a rezolva problema cu request-uri multiple către diferite endpoint-uri, GraphQL duce ideea de endpoint customizat la extrem și oferă, astfel, doar un singur endpoint pentru toate nevoile clienților.
 
-* Cu un singur endpoint atunci apare nevoia de un limbaj prin care clientii sa stie cum sa ceara anumite date de la un singur endpoint. Daca nu am avea acest limbaj s-ar putea sa ne trezim ca am obtinut in interfata practic toata baza de date, lucru care nu e dorit. Cu acest limbaj clientul are control asupra request-ului, lucru care in trecut era detinut de catre API, si obtine ceea ce vrea.
+* Cu un singur endpoint, atunci apare nevoia de un limbaj prin care clienții să știe cum să ceară anumite date de la un singur endpoint. Dacă nu am avea acest limbaj, s-ar putea să ne trezim că am obținut în interfață toată baza de date, ceea ce nu e dorit. Cu acest limbaj, clientul are control asupra request-ului, lucru care, în trecut, era deținut de către API, obținând ceea ce vrea.
 
-* In ceea ce priveste *versionarea*, GraphQL pur si simplu evita aceasta problema prin structura de *graf* in care sunt reprezentate datele. Oricand putem introduce noi proprietati fara sa le stergem pe cele vechi, creand noi noduri in *graf* si odata cu ele noi drumuri. API-ul nostru doar creste nu se modifica cu totul. Acest lucru este foarte util pentru clienti mobili la care nu putem controla versiunea de API pe care aleg s-o foloseasca. Odata instalata o aplicatie mobila poate ramane nemodificata ani buni prin refuzarea update-urilor.
+* În ceea ce privește *versionarea*, GraphQL evită această problemă prin structura de *graf* în care sunt reprezentate datele. Oricând putem introduce noi proprietăți fără să le ștergem pe cele vechi, creând noi noduri în *graf* și, odată cu ele, noi drumuri. API-ul nostru doar crește nu se modifică cu totul. Acest lucru este foarte util pentru clienții mobili cărora nu le putem controla versiunea de API pe care aleg s-o folosească. 
 
-Inca in dubii legat de utilitatea GraphQL-ului?
+Încă în dubii legat de utilitatea GraphQL-ului?
 
-## API-uri REST vs. API-uri GraphQL - exemplu concret
+## API-uri REST VS. API-uri GraphQL - exemplu concret
 
-Sa ne imaginam ca avem de construit o aplicatie care va oferii detalii despre personajele din filmele Star Wars.
+Să ne imaginăm că avem de construit o aplicație care va oferi detalii despre personajele din filmele Star Wars.
 
-In primul nostru task vrem sa construim o pagina care sa arate detalii despre un singur personaj. Spre exemplu, Darth Vader si toate filmele in care a aparut. Vrem sa oferim numele personajului, anul nasterii, planeta de pe care vine si titlul filmelor in care a aparut.
+în prima noastră sarcină avem de realizat o pagină care să arate detalii despre un singur personaj. Spre exemplu, Darth Vader. Vrem să oferim numele personajului, anul nașterii, planeta de pe care vine și titlul filmelor în care a apărut.
 
-Daca analizam cerinta, putem vedea ca avem de a face cu 3 resurse diferite: Personaj, Planeta si Film. Relatii dintre aceste 3 resurse pot fi:
+Dacă analizăm cerința, putem vedea că avem de a face cu trei resurse diferite: Personaj, Planeta și Film. Relațiile dintre aceste trei resurse pot fi:
 
-* Personajul are mai multe Filme in care a aparut
-* Planeta are mai multe Personaje cu originea de pe aceasta
+* Personajul are mai multe Filme în care a apărut
+* Planeta are mai multe Personaje care își au originea pe aceasta
 
-Sa ne uitam cum ar putea arata toate acestea in format JSON:
+Să ne uităm cum ar putea arăta toate acestea în format JSON:
 
 ```javascript
 {
@@ -114,7 +114,7 @@ Sa ne uitam cum ar putea arata toate acestea in format JSON:
 }
 ```
 
-Reprezentarea unei componente de UI pentru datele noastre ar putea fi urmatoarea:
+Reprezentarea unei componente de UI pentru datele noastre ar putea fi următoarea:
 
 ```javascript
 <p><strong>Nume: </strong> {persoana.name}</p>
@@ -123,13 +123,12 @@ Reprezentarea unei componente de UI pentru datele noastre ar putea fi urmatoarea
 <p><strong>Filme: </strong> {persoana.filme.map(film => film.titlu)}</p>
 ```
 
-In acest exemplu simplu am consumat toate resursele pe care ni le-a trimis API-ul nostru. Acum sa vedem cum putem cere datele acestea unui API REST:
+În acest exemplu simplu am consumat toate resursele pe care ni le-a trimis API-ul nostru. Acum, să vedem cum putem cere datele acestea unui API REST:
 
 ```
 GET - /personaje/{id} // presupunand ca stim id-ul personajului, il vom oferii API-ului nostru ca mai apoi el sa ne dea informatii despre el
 ```
-
-Un endpoint construit folosind standardele REST ne-ar da pe langa informatiile caracteristice personajului si id-ul planetei de pe care provine si o lista cu id-urile filmelor in care a aparut.
+Pe lângă informațiile caracteristice personajului, un endpoint construit folosind standardele REST, ne-ar oferi și id-ul planetei de pe care provine, plus o listă cu id-ul filmelor în care a apărut.
 
 ```javascript
 {
@@ -141,13 +140,13 @@ Un endpoint construit folosind standardele REST ne-ar da pe langa informatiile c
 // reprezentarea json cu ceea ce am putea primi folosind endpoint-ul precedent
 ```
 
-Apoi pentru a afla numele planetei personajului, vom trimite inca un request:
+Apoi, pentru a afla numele planetei personajului, vom trimite încă un request:
 
 ```
 GET - /planete/1 // vom apela un endpoint similar cu cel definit pentru personaje
 ```
 
-Iar pentru a obtine titlurile filmelor vom trimite urmatoarele request-uri:
+Iar pentru a obține titlurile filmelor, vom trimite următoarele request-uri:
 
 ```
 GET - /filme/1
@@ -156,28 +155,20 @@ GET - /filme/3
 GET - /filme/6
 ```
 
-Dupa ce vom primi toate raspunsurile putem sa le combinam pentru a ne modela componenta de detalii a personajului. Putem observa ca folosind un API clasic de tip REST vom face 6 request-uri pentru o singura componenta, si pe langa asta a trebuit sa descriem fiecare request pe care l-am facut intr-un mod imperativ.
+După ce vom primi toate răspunsurile, putem să le combinăm pentru a ne modela componenta de UI. Putem observa că, folosind un API clasic de tip REST, vom face șase request-uri pentru o singură componentă.
 
-Acest exemplu a fost bazat pe API-ul public http://swapi.co/ pe care-l puteti incerca pentru a modela componenta descrisa.
+Acest exemplu a fost bazat pe API-ul public http://swapi.co/, pe care îl puteți încerca pentru a modela componenta descrisă.
 
-Putem evita totusi toate acele request-uri pentru filme daca am incerca sa ne facem un endpoint care ar arata in felul urmator:
+Acum să aruncăm o privire la modul cum GraphQL abordează sarcina noastră.
+Serverul nostru va expune doar un singur endpoint. Fie că e o operație de tip GET sau o operație de tip POST etc., toate vor ajunge într-un singur loc, iar în cazul nostru, ar putea ajunge în: ```/graphql```.
 
-```
-GET - /personaje/{id}filme
-```
-
-In API-uri REST clasice nu vom vedea prea des un endpoint care sa ne ofere datele intr-un astfel de mod si va trebui sa vorbim cu inginerii nostri care lucreaza la API sa implementeze acest tip de endpoint. Adesea asa cresc API-urile REST, adaugam endpoint-uri specifice pentru nevoile clientilor.
-
-Acum sa aruncam o privire la cum GraphQL abordeaza task-ul nostru.
-Serverul nostru acum va expune doar un singur endpoint iar canalul de comunicare nu va conta. Fie ca e o operatie de tip GET sau o operatie de tip POST si asa mai departe toate vor ajunge intr-un singur loc si in cazul nostru ar putea ajunge in: ```/graphql```.
-
-Din moment ce noi vrem sa primim toate datele noastre intr-un singur request trebuie sa ii exprimam aceasta dorinta endpoint-ului printr-un GraphQL query:
+Din moment ce noi vrem să primim toate datele noastre într-un singur request, trebuie să îi exprimăm nevoia noastră de date endpoint-ului, printr-un GraphQL query:
 
 ```
 GET or POST /graphql?query={...} // query e doar un string care va avea o structura predefinita cu datele pe care le cerem
 ```
 
-Daca ar fi sa cerem datele folosind limbajul natural si poate chiar limba romana am spune *avem nevoie de numele unui personaj, data lui de nastere, numele planetei de provenienta si titlul filmelor in care apare*. Intr-un query de GraphQL am scrie in felul urmator:
+Dacă ar fi să cerem datele, folosind limbajul natural și poate chiar limba română, am spune *avem nevoie de numele unui personaj, data lui de naștere, numele planetei de proveniență și titlul filmelor în care apare*. Într-un query de GraphQL am scrie în felul următor:
 
 ```graphql
 {
@@ -193,17 +184,15 @@ Daca ar fi sa cerem datele folosind limbajul natural si poate chiar limba romana
 }
 ```
 
-Daca ar fi sa comparam query-ul nostru de GraphQL cu JSON-ul pe care vrem sa-l primim, putem vedea ca sunt aproape acelasi lucru, singurul lucru care lipseste din query-ul nostru sunt valorile pe care JSON-ul le contine. Acest lucru deriva de la faptul ca si in limbaj natural intrebarile noastre seamana cu raspunsurile pe care le primim.
-Spre exemplu daca raspunsul pe care il obtinem este:
+Dacă ar fi să comparăm query-ul nostru de GraphQL cu JSON-ul pe care vrem să-l primim, putem vedea că sunt aproape același lucru. Singura diferență este că din query-ul nostru lipsesc valorile pe care JSON-ul le conține. Acest lucru derivă de la faptul că și în limbaj natural întrebările noastre seamănă cu răspunsurile pe care le primim.
+Spre exemplu, dacă răspunsul pe care îl obținem este:
 > Noi suntem programatori.
 
-Intrebarea (*query-ul*) noastra ar arata asa:
+Întrebarea (*query-ul*) noastră ar arăta așa:
 
-> (Ce) sunteti voi?
+> (Ce) sunteți voi?
 
-In acest lucru se ascunde inca un feature al GraphQL-ului: nu este nevoie sa inspectam raspunsul unui request pentru a-l putea reprezenta in UI.
-
-Putem folosi API-ul de GraphQL pentru API-ul de Star Wars utilizand: https://github.com/graphql/swapi-graphql. Puteti incerca sa obtineti toate informatiile de care are nevoie componenta noastra de detalii folosind urmatorul GraphQL *query*:
+Putem folosi API-ul de GraphQL pentru serverul de Star Wars utilizând: https://github.com/graphql/swapi-graphql. Puteți încerca să obtineți toate informațiile de care are nevoie componenta de UI, folosind următorul GraphQL *query*:
 
 ```graphql
 {
@@ -222,25 +211,25 @@ Putem folosi API-ul de GraphQL pentru API-ul de Star Wars utilizand: https://git
 }
 ```
 
-## Cu multa flexibilitate vine responsabilitate mare
+## Cu multă flexibilitate vine responsabilitate mare
 
-Solutii perfecte nu exista. Odata cu flexibilitatea introdusa de GraphQL apar o multitudine de probleme.
+Soluții perfecte nu există. Odată cu flexibilitatea introdusă de GraphQL, apar o multitudine de probleme.
 
-O problema grava pe care GraphQL a creat-o sunt *DDOS-urile* (Denial of Service attacks) mult mai accesibile. Un server de GraphQL poate fi atacat cu query-uri recursive sau foarte complexe, care sa consume toate resursele acestuia. Aceste tipuri de atacuri nu sunt specifice GraphQL-ului insa sunt facute usor de realizat datorita flexibilitatii cu care ne "ajuta" acesta.
+O problemă gravă pe care GraphQL a creat-o, sunt *DDOS-urile* (Denial of Service attacks), mult mai accesibile. Un server de GraphQL poate fi atacat cu query-uri recursive sau foarte complexe, care să consume toate resursele acestuia. Aceste tipuri de atacuri nu sunt specifice GraphQL-ului, însă sunt ușor de realizat, datorită flexibilității cu care ne "ajută" acesta.
 
-Aceasta problema poate fi rezolvata in cateva metode nu tocmai perfecte printre care:
+Problema poate fi rezolvată în câteva metode, nu tocmai perfecte:
 
-* Oprirea request-urilor care tin mult prea mult
-* Stabilirea limitelor pentru clienti care vor sa acceseze resurse
-* Daca API-ul nostru nu e public putem sa autorizam query-urilor clientilor nostrii cu un identificator unic. Aceasta metoda pare sa fie folosita de catre Facebook.
+* Oprirea request-urilor care țin mult prea mult
+* Stabilirea limitelor pentru clienții care vor să acceseze resurse
+* Dacă API-ul nostru nu e public, putem să autorizăm *query-urile* clienților noștri cu un identificator unic. Această metodă pare să fie folosită de către Facebook.
 
-Ultimul punct ne duce cu gandul la o alta problema si anume autentificarea si autorizarea clientilor. Cand sa avem grija de aceste lucruri, inainte, dupa sau in timpul executarii procesului?
+Ultimul punct ne duce cu gândul la o altă problemă, și anume, autentificarea și autorizarea clienților. Când să avem grijă de aceste lucruri? Înainte, după sau în timpul executării *query-ului*?
 
-Pentru a rezolva problema asta, putem sa ne inspiram de la REST API-uri. Putem sa privim GraphQL ca un layer intre datele noastre si clienti, iar autentificarea si autorizatia ar putea fi un alt layer pe care il putem pune peste cel de GraphQL. Dar daca vrem sa punem aceste layere in spatele GraphQL-ului, putem folosi GraphQL pentru a comunica clientilor token-urile de acces de la layer-ul de securitate si invers.
+Pentru a rezolva problema, putem să ne inspirăm de la REST API-uri. Putem să privim GraphQL ca un layer între datele noastre și clienți, iar autentificarea și autorizarea ar putea fi un alt layer pe care îl putem pune peste cel de GraphQL. Totuși, dacă vrem să punem aceste layere în spatele GraphQL-ului, putem folosi GraphQL pentru a comunica clienților *tokens* de acces de la layer-ul de securitate și invers.
 
-O alta problema care ne da batai de cap este *caching* pe client. Spre deosebire de un REST API care are o structura de dictionar unde fiecare locatie ne da o resursa unica, GraphQL e sub forma de *graf* si acest lucru e problematic. Am putea sa pastram un cache sub forma de *query*: valoare insa aceasta solutie este limitata.
+O altă problemă care ne oferă dificultate, este *caching* pe client. Spre deosebire de un REST API, care are o structură de dicționar, unde fiecare locație ne dă o resursă unică, GraphQL e sub forma de *graf*, acest lucru fiind problematic. Am putea să păstrăm un cache sub forma de ```*query*: valoare```, însa această soluție este limitată.
 
-Si lista de probleme continua prin probleme mult mai complexe precum *N+1 SQL queries*. Pentru a putea intelege cum ne afecteaza *N+1 SQL queries* putem sa ilustram o relatie simpla intre un *User* tip si un tip *Adresa*:
+Lista de probleme continuă mult mai complexe precum *N+1 SQL queries*. Pentru a putea intelege cum ne afecteaza *N+1 SQL queries* putem sa ilustram o relatie simpla intre un *User* tip si un tip *Adresa*:
 
 ```graphql
 type User {
