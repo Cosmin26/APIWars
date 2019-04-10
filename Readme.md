@@ -229,66 +229,8 @@ Pentru a rezolva problema, putem să ne inspirăm de la REST API-uri. Putem să 
 
 O altă problemă care ne oferă dificultate, este *caching* pe client. Spre deosebire de un REST API, care are o structură de dicționar, unde fiecare locație ne dă o resursă unică, GraphQL e sub forma de *graf*, acest lucru fiind problematic. Am putea să păstrăm un cache sub forma de ```*query*: valoare```, însa această soluție este limitată.
 
-Lista de probleme continuă mult mai complexe precum *N+1 SQL queries*. Pentru a putea intelege cum ne afecteaza *N+1 SQL queries* putem sa ilustram o relatie simpla intre un *User* tip si un tip *Adresa*:
-
-```graphql
-type User {
-  id: ID
-  adresa: Adresa
-}
-type Adresa {
-  id: ID
-  nuneStrada: String
-  oras: String
-}
-```
-
-Si sa presupunem ca facem un *query* simplu pentru a obtine lista cu toti userii:
-
-```graphql
-query ObtineListaUser {
-  userLista {
-    id
-    adresa {
-      id
-      numeStrasda
-    }
-  }
-}
-```
-
-Pentru a putea primii rezultatul acelui query GraphQL merge printr-o serie de pasi care se numesc si *resolveri*. Primul *query resolver* este ```userLista``` care ne va citi din baza de date printr-un singur query toti userii:
-
-```javascript
-const resolvers = {
-  query: {
-    userList: (root) => {
-      return db.users.all()
-    }
-  }
-}
-```
-
-Al doilea pas ar fi ca pentru fiecare *n* useri din acea lista, GraphQL sa foloseasca alt *resolver* pentru a lua atributul de adresa, adica sa faca cate un query pentru fiecare element din lista:
-
-```javascript
-const resolvers = {
-  User: {
-    address: (user) => {
-      return db.addresses.fromId(user.addressId)
-    }
-  }
-}
-```
-
-Acest lucru este foarte ineficient sa obtinem o lista de atribute si adesea baza noastra de date ne-ar permite sa obtinem lista de adrese folosind o operatie precum: ```db.addresses.fetchFromIds(addressIds)``` si asa am dori sa facem si noi.
-
-O solutie pentru problema de *n+1 SQL queries* poate fi un modul numit **_DataLoader_**, un proiect contribuit comunitatii de catre Facebook, care se ocupa cu 2 lucruri:
-1. Face cache la request-uri similare
-2. Grupeaza request-urile unui singur obiect
-
 ## Concluzie
 
-NPM registry a prezis ca 2019 va fi anul in care GraphQL va exploda ca si popularitate, insa ca orice trend trebuie tratat cu grija pentru ca s-ar putea dovedi ca nu este solutia problemelor api-urilor voastre existente. Singurul factor care ar trebui sa va faca sa decideti daca GraphQL intr-adevar viitorul consumptiei de API-uri este sa-l incercati.
+NPM registry a prezis că 2019 va fi anul în care GraphQL va exploda ca și popularitate, însă, ca orice trend, trebuie tratat cu grijă pentru că s-ar putea dovedi că nu este soluția problemelor API-urilor noastre existente. Singurul factor care ar trebui să ne facă să decidem dacă GraphQL este viitorul consumului de resurse ale unui API, este să îl încercăm noi înșine.
 
-Puteti consulta urmatorul repository de Github unde puteti vedea o diferenta clara intre cum se consuma un api clasic REST si cum se consuma unul de GraphQL: https://linkcatregit.com/
+Puteți consulta următorul repository de Github, unde veți vedea o diferență clară între cum se consumă un API clasic REST și cum se consumă unul de GraphQL: https://linkcatregit.com/
