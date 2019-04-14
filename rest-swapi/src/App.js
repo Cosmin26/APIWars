@@ -20,12 +20,18 @@ class App extends Component {
     }
   }
 
-  handleChangeCharacter = (event) => {
-    this.setState((prevState) => ({
-        currentCharacterId: prevState + event.target.dataset.step
-      })
-    );
-  }
+  handleChangeCharacter = event => {
+    const step = parseInt(event.target.dataset.step);
+
+    this.setState(prevState => {
+      const newCharacterId = prevState.currentCharacterId + step;
+      if (newCharacterId > 0 && newCharacterId < 4) {
+        return {
+          currentCharacterId: newCharacterId
+        };
+      }
+    });
+  };
  
   render() {
     return (
